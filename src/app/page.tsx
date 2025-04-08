@@ -106,7 +106,13 @@ export default function Home() {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 w-full max-w-xs">
         <Input 
           placeholder="Please enter book ID" 
-          {...register("bookId", { required: "Book ID is required" })}
+          {...register("bookId", { 
+            required: "Book ID is required",
+            pattern: {
+              value: /^[0-9]+$/,
+              message: "Please enter numbers only"
+            }
+          })}
           disabled={isLoading}
         />
         {errors.bookId && (
