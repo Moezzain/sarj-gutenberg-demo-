@@ -51,7 +51,7 @@ export async function GET(request: Request) {
       success: true, 
       bookId, 
       metadataAvailable,
-      content: content.slice(0, 1000) + "..." // Just sending the first 1000 chars to avoid huge payloads
+      content: content.slice(0, 10000) + "..." // Just sending the first 1000 chars to avoid huge payloads
     });
   } catch (error) {
     console.error('Error fetching book:', error);
