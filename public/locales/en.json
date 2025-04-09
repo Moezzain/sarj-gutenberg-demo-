@@ -1,0 +1,39 @@
+{
+    "title": "Gutenberg Book Analyzer",
+    "navTitle": "Gutenberg Book Analyzer",
+    "bookForm": {
+      "placeholder": "Please enter book ID",
+      "required": "Book ID is required",
+      "numbersOnly": "Please enter numbers only",
+      "analyzeButton": "Analyze"
+    },
+    "bookInfo": {
+      "title": "Book Information",
+      "id": "Book ID",
+      "metadataAvailable": "Metadata Available",
+      "yes": "Yes",
+      "no": "No",
+      "analyzeCharacters": "Analyze Characters",
+      "analyzing": "Analyzing Characters..."
+    },
+    "characterAnalysis": {
+      "title": "Character Analysis",
+      "characters": "Characters",
+      "name": "Name",
+      "description": "Description",
+      "interactions": "Interactions",
+      "source": "Characters",
+      "interaction": "Interaction",
+      "strength": "Strength"
+    },
+    "preview": {
+      "title": "Preview Content"
+    },
+    "metadata": {
+      "title": "Sarj - Gutenberg Book Analyzer",
+      "description": "Analyze books from Project Gutenberg"
+    },
+    "nav": {
+      "title": "Gutenberg Book Analyzer"
+    }
+  }

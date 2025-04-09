@@ -47,16 +47,18 @@ export async function GET(request: Request) {
     // In a real app, you might want to parse the HTML to extract specific metadata
     const metadataAvailable = metadataResponse.ok;
 
+    console.log(metadataResponse.text());
     return NextResponse.json({ 
       success: true, 
       bookId, 
       metadataAvailable,
-      content: content.slice(0, 10000) + "..." // Just sending the first 1000 chars to avoid huge payloads
+      metadata: metadataResponse.text(),
+      content: content.slice(0, 25000) + "..." // Just sending the first 7500 chars because the api can handle 8192 tokens 8,192 tokens ≈ 32,000-35,000 characters
     });
   } catch (error) {
     console.error('Error fetching book:', error);
     return NextResponse.json(
-      { error: 'An error occurred while fetching the book' },
+      { error: 'Can\'t find book' },
       { status: 500 }
     );
   }
