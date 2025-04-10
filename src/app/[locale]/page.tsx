@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import ClientOnly from "@/components/ClientOnly";
 import { useTranslations } from "next-intl";
+import Image from 'next/image';
+
 type FormData = {
   bookId: string;
 };
@@ -15,6 +17,14 @@ type BookData = {
   success: boolean;
   bookId: string;
   metadataAvailable: boolean;
+  metadata: {
+    title?: string;
+    author?: string;
+    language?: string;
+    subjects?: string[];
+    summary?: string;
+    coverImage?: string;
+  };
   content: string;
 };
 
@@ -30,13 +40,23 @@ type Interaction = {
   strength: number;
 };
 
+type WritingStyle = {
+  formality: string;
+  approach: string;
+  notes: string;
+};
+
 type CharacterAnalysis = {
   characters: Character[];
   interactions: Interaction[];
+  genre: string;
+  writingStyle: WritingStyle;
 };
 
-export default function Home() {
+export default function Home({params}: {params: Promise<{locale: string}>}) {
   const t = useTranslations();
+  const {locale} = use(params);
+ 
   const [isLoading, setIsLoading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [bookData, setBookData] = useState<BookData | null>(null);
@@ -74,12 +94,12 @@ export default function Home() {
     if (!bookData?.content) return;
     
     setIsAnalyzing(true);
-    
     try {
       const response = await fetch('/api/analyze-characters', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept-Language': locale === 'ar' ? 'ar' : 'en'
         },
         body: JSON.stringify({ text: bookData.content }),
       });
@@ -134,7 +154,7 @@ export default function Home() {
       </form>
       
       {bookData && (
-        <div className="mt-8 w-full max-w-4xl border p-4 rounded-md">
+        <div className="mt-8 w-full max-w-6xl border p-4 rounded-md">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">{t('bookInformation')}</h2>
             <Button 
@@ -155,8 +175,51 @@ export default function Home() {
           </div>
           
           <div className="mb-4">
-            <p><span className="font-medium">{t('id')}:</span> {bookData.bookId}</p>
-            <p><span className="font-medium">{t('metadataAvailable')}:</span> {bookData.metadataAvailable ? t('yes') : t('no')}</p>
+            <div className="flex flex-wrap items-start gap-6">
+              {bookData.metadata?.coverImage && (
+                <div className="w-36 flex-shrink-0 rounded overflow-hidden shadow-md relative">
+                  <Image 
+                    src={bookData.metadata.coverImage} 
+                    alt={bookData.metadata.title || "Book cover"} 
+                    width={144}
+                    height={216}
+                    className="object-cover"
+                    unoptimized={bookData.metadata.coverImage.startsWith('https://www.gutenberg.org')}
+                  />
+                </div>
+              )}
+              <div className="flex-grow">
+                {bookData.metadata?.title && (
+                  <h3 className="text-lg font-semibold">{bookData.metadata.title}</h3>
+                )}
+                {bookData.metadata?.author && (
+                  <p className="text-gray-700">{t('author')}: {bookData.metadata.author}</p>
+                )}
+                <p><span className="font-medium">{t('id')}:</span> {bookData.bookId}</p>
+                <p><span className="font-medium">{t('metadataAvailable')}:</span> {bookData.metadataAvailable ? t('yes') : t('no')}</p>
+                {bookData.metadata?.language && (
+                  <p><span className="font-medium">{t('language')}:</span> {bookData.metadata.language}</p>
+                )}
+                {bookData.metadata?.subjects && bookData.metadata.subjects.length > 0 && (
+                  <div className="mt-2">
+                    <p className="font-medium">{t('subjects')}:</p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {bookData.metadata.subjects.map((subject, idx) => (
+                        <span key={idx} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs">
+                          {subject}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            {bookData.metadata?.summary && (
+              <div className="mt-3">
+                <p className="font-medium">{t('summary')}:</p>
+                <p className="text-sm text-gray-700 mt-1">{bookData.metadata.summary}</p>
+              </div>
+            )}
           </div>
           
           {characterData && (
@@ -215,6 +278,24 @@ export default function Home() {
                           ))}
                         </tbody>
                       </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-4 p-4 bg-gray-50 rounded-md mt-9">
+                  <h4 className="font-semibold mb-2">{t('additionalAnalysis')}</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">{t('predictedGenre')}:</p>
+                      <p className="text-lg">{characterData.genre}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">{t('writingStyle')}</p>
+                      <div className="text-sm mt-1 px-2">
+                        <p><span className="font-medium">{t('formality')}:</span> {characterData.writingStyle.formality}</p>
+                        <p><span className="font-medium">{t('approach')}:</span> {characterData.writingStyle.approach}</p>
+                        <p><span className="font-medium">{t('styleNotes')}:</span> {characterData.writingStyle.notes}</p>
+                      </div>
                     </div>
                   </div>
                 </div>

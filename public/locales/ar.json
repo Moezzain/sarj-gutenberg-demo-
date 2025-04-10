@@ -17,7 +17,7 @@
     "name": "الاسم",  
     "description": "الوصف",
     "interactions": "التفاعلات",
-    "source": "الشخصيات",
+    "source": "المصدر",
     "interaction": "تفاعل",
     "strength": "قوة",
     "preview": {
@@ -35,5 +35,15 @@
     "genericError": "حدث خطأ أثناء جلب الكتاب.",
     "characterAnalysisComplete": "اكتمل تحليل الشخصيات!",
     "analysisError": "فشل في تحليل الشخصيات.",
-    "analysisGenericError": "حدث خطأ أثناء تحليل الشخصيات."
+    "analysisGenericError": "حدث خطأ أثناء تحليل الشخصيات.",
+    "additionalAnalysis": "تحليل إضافي",
+    "predictedGenre": "النوع الأدبي المتوقع",
+    "writingStyle": "أسلوب الكتابة",
+    "formality": "مستوى الرسمية",
+    "approach": "نهج الكتابة",
+    "styleNotes": "ملاحظات أسلوبية",
+    "author": "المؤلف",
+    "language": "اللغة",
+    "subjects": "المواضيع",
+    "summary": "ملخص"
   }

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from 'next-intl';
 import { Poppins, Cairo } from "next/font/google";
 import { Toaster } from "sonner";
 import { NextIntlClientProvider } from "next-intl";

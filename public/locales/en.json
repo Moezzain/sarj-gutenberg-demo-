@@ -17,11 +17,11 @@
     "name": "Name",
     "description": "Description",
     "interactions": "Interactions",
-    "source": "Characters",
+    "source": "Source",
     "interaction": "Interaction",
     "strength": "Strength",
     "preview": {
-      "title": "Preview Content"
+      "title": "Content Preview"
     },
     "metadata": {
       "title": "Sarj - Gutenberg Book Analyzer",
@@ -35,5 +35,15 @@
     "genericError": "An error occurred while fetching the book.",
     "characterAnalysisComplete": "Character analysis complete!",
     "analysisError": "Failed to analyze characters.",
-    "analysisGenericError": "An error occurred during character analysis."
+    "analysisGenericError": "An error occurred while analyzing characters.",
+    "additionalAnalysis": "Additional Analysis",
+    "predictedGenre": "Predicted Genre",
+    "writingStyle": "Writing Style",
+    "formality": "Formality",
+    "approach": "Approach",
+    "styleNotes": "Style Notes",
+    "author": "Author",
+    "language": "Language",
+    "subjects": "Subjects",
+    "summary": "Summary"
   }

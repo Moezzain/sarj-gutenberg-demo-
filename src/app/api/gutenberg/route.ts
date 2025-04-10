@@ -1,5 +1,66 @@
 import { NextResponse } from 'next/server';
 
+// Helper function to extract metadata from HTML
+function extractBookMetadata(html: string) {
+  const metadata: {
+    title?: string;
+    author?: string;
+    language?: string;
+    subjects?: string[];
+    summary?: string;
+    coverImage?: string;
+  } = {
+    subjects: []
+  };
+
+  try {
+    // Title extraction
+    const titleMatch = html.match(/<meta name="title" content="([^"]+)">/);
+    if (titleMatch && titleMatch[1]) {
+      let title = titleMatch[1];
+      // Remove "by Author Name" if present
+      title = title.replace(/ by [^|]+$/, '');
+      metadata.title = title.trim();
+    }
+
+    // Author extraction
+    const authorMatch = html.match(/<a href="\/ebooks\/author\/\d+" rel="marcrel:aut"[^>]*>([^<]+)<\/a>/);
+    if (authorMatch && authorMatch[1]) {
+      metadata.author = authorMatch[1].trim();
+    }
+
+    // Language extraction
+    const languageMatch = html.match(/<tr[^>]*itemprop="inLanguage"[^>]*>[\s\S]*?<td>([^<]+)<\/td>/);
+    if (languageMatch && languageMatch[1]) {
+      metadata.language = languageMatch[1].trim();
+    }
+
+    // Subjects extraction
+    const subjectMatches = html.matchAll(/<th>Subject<\/th>\s*<td[^>]*>\s*<a[^>]*>([^<]+)<\/a>/g);
+    for (const match of subjectMatches) {
+      if (match[1]) {
+        metadata.subjects?.push(match[1].trim());
+      }
+    }
+
+    // Summary extraction
+    const summaryMatch = html.match(/<span class="toggle-content">\s*([^<]+)/);
+    if (summaryMatch && summaryMatch[1]) {
+      metadata.summary = summaryMatch[1].trim();
+    }
+
+    // Cover image extraction
+    const coverMatch = html.match(/<img class="cover-art" src="([^"]+)"/);
+    if (coverMatch && coverMatch[1]) {
+      metadata.coverImage = coverMatch[1];
+    }
+  } catch (error) {
+    console.error("Error extracting metadata:", error);
+  }
+
+  return metadata;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const bookId = searchParams.get('bookId');
@@ -43,17 +104,16 @@ export async function GET(request: Request) {
     // Get the content as text
     const content = await contentResponse.text();
     
-    // For metadata, we'll just check that it's available
-    // In a real app, you might want to parse the HTML to extract specific metadata
-    const metadataAvailable = metadataResponse.ok;
+    // Get and parse the metadata HTML
+    const metadataHtml = await metadataResponse.text();
+    const bookMetadata = extractBookMetadata(metadataHtml);
 
-    console.log(metadataResponse.text());
     return NextResponse.json({ 
       success: true, 
       bookId, 
-      metadataAvailable,
-      metadata: metadataResponse.text(),
-      content: content.slice(0, 25000) + "..." // Just sending the first 7500 chars because the api can handle 8192 tokens 8,192 tokens ≈ 32,000-35,000 characters
+      metadataAvailable: metadataResponse.ok,
+      metadata: bookMetadata,
+      content: content.slice(0, 20000) + "..."
     });
   } catch (error) {
     console.error('Error fetching book:', error);
