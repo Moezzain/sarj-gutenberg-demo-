@@ -17,8 +17,8 @@ type ParentProp = {
 };
 
 // Generate metadata dynamically based on locale
-export async function generateMetadata({ params }: { params: { locale: string } }): Promise<Metadata> {
-  const locale = params.locale;
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params; 
   const t = await getTranslations({ locale, namespace: 'metadata' });
   
   return {
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 }
 
 export default async function LocaleLayout({ children, params }: ParentProp) {
-  const {locale} = await params;
+  const { locale } = await params; 
   const t = await getTranslations({ locale, namespace: 'metadata' });
   const fontClass = locale === "en" ? poppins.className : cairo.className;
 
