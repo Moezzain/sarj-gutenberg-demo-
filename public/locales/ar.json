@@ -1,39 +1,39 @@
 {
     "title": "محلل كتب جوتنبرج",
     "navTitle": "محلل كتب جوتنبرج",
-    "bookForm": {
-      "placeholder": "الرجاء إدخال معرف الكتاب",
-      "required": "معرف الكتاب مطلوب",
-      "numbersOnly": "الرجاء إدخال أرقام فقط",
-      "analyzeButton": "تحليل"
-    },
-    "bookInfo": {
-      "title": "معلومات الكتاب",
-      "id": "معرف الكتاب",
-      "metadataAvailable": "البيانات الوصفية متاحة",
-      "yes": "نعم",
-      "no": "لا",
-      "analyzeCharacters": "تحليل الشخصيات",
-      "analyzing": "جاري تحليل الشخصيات..."
-    },
-    "characterAnalysis": {
-      "title": "تحليل الشخصيات",
-      "characters": "الشخصيات",
-      "name": "الاسم",
-      "description": "الوصف",
-      "interactions": "التفاعلات",
-      "source": "الشخصيات",
-      "interaction": "التفاعل",
-      "strength": "القوة"
-    },
+    "placeholder": "الرجاء إدخال معرف الكتاب",
+    "required": "معرف الكتاب مطلوب",
+    "numbersOnly": "الرجاء إدخال أرقام فقط",
+    "analyzeButton": "تحليل",
+    "loading": "جاري التحميل...",
+    "id": "معرف الكتاب",
+    "metadataAvailable": "البيانات الوصفية متاحة",
+    "yes": "نعم",
+    "no": "لا",
+    "bookInformation": "معلومات الكتاب",
+    "analyzeCharacters": "تحليل الشخصيات",
+    "analyzing": "تحليل الشخصيات...",
+    "characters": "الشخصيات",
+    "name": "الاسم",  
+    "description": "الوصف",
+    "interactions": "التفاعلات",
+    "source": "الشخصيات",
+    "interaction": "تفاعل",
+    "strength": "قوة",
     "preview": {
       "title": "معاينة المحتوى"
     },
     "metadata": {
       "title": "سرج - محلل كتب جوتنبرج",
-      "description": "تحليل كتب من مكتبة جوتنبرج"
+      "description": "تحليل الكتب من مشروع جوتنبرج"
     },
     "nav": {
       "title": "محلل كتب جوتنبرج"
-    }
+    },
+    "foundBook": "تم العثور على كتاب بمعرف",
+    "bookFetchError": "فشل في العثور على الكتاب. يرجى التحقق من المعرف والمحاولة مرة أخرى.",
+    "genericError": "حدث خطأ أثناء جلب الكتاب.",
+    "characterAnalysisComplete": "اكتمل تحليل الشخصيات!",
+    "analysisError": "فشل في تحليل الشخصيات.",
+    "analysisGenericError": "حدث خطأ أثناء تحليل الشخصيات."
   }
