@@ -32,8 +32,6 @@ export async function POST(request: Request) {
   }
 
   try {
-    console.log('locale ', locale);
-    console.log(`Return the data in JSON format with this structure${locale === 'ar' && ' the values for the data (name, description, interaction description) should be translated to arabic but the keys should be in english'}:`);
     // Call Groq API
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -111,7 +109,6 @@ export async function POST(request: Request) {
     // Extract pure JSON from response that might contain markdown
     const content = result.choices[0].message.content;
 
-    console.log('Raw response:', content);
 
     // Handle different response formats 
     let jsonData = '';
@@ -160,7 +157,6 @@ export async function POST(request: Request) {
     try {
       // Try parsing to ensure we have clean JSON
       const analysisData = JSON.parse(jsonData);
-      console.log('Parsed data:', analysisData);
       
       // If we requested Arabic but got English, return an error
       if (locale === 'ar') {

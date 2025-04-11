@@ -1,15 +1,33 @@
 import { NextResponse } from 'next/server';
 
+// Types for better type safety
+interface BookMetadata {
+  title?: string;
+  author?: string;
+  language?: string;
+  subjects?: string[];
+  summary?: string;
+  coverImage?: string;
+}
+
+interface GutenbergResponse {
+  success: boolean;
+  bookId: string;
+  metadataAvailable: boolean;
+  contentAvailable: boolean;
+  metadata: BookMetadata;
+  content: string | null;
+  error?: string;
+}
+
+// Constants
+const GUTENBERG_BASE_URL = 'https://www.gutenberg.org';
+const USER_AGENT = 'Mozilla/5.0 (compatible; GutenbergAnalyzer/1.0)';
+const CONTENT_PREVIEW_LENGTH = 20000;
+
 // Helper function to extract metadata from HTML
-function extractBookMetadata(html: string) {
-  const metadata: {
-    title?: string;
-    author?: string;
-    language?: string;
-    subjects?: string[];
-    summary?: string;
-    coverImage?: string;
-  } = {
+function extractBookMetadata(html: string): BookMetadata {
+  const metadata: BookMetadata = {
     subjects: []
   };
 
@@ -61,39 +79,53 @@ function extractBookMetadata(html: string) {
   return metadata;
 }
 
-export async function GET(request: Request) {
+// Helper function to fetch data from Gutenberg
+async function fetchFromGutenberg(url: string): Promise<Response> {
+  return fetch(url, {
+    method: 'GET',
+    headers: {
+      'User-Agent': USER_AGENT,
+    },
+  });
+}
+
+export async function GET(request: Request): Promise<NextResponse<GutenbergResponse>> {
   const { searchParams } = new URL(request.url);
   const bookId = searchParams.get('bookId');
 
   if (!bookId) {
-    return NextResponse.json({ error: 'Book ID is required' }, { status: 400 });
+    return NextResponse.json({ 
+      success: false, 
+      bookId: '', 
+      metadataAvailable: false, 
+      contentAvailable: false, 
+      metadata: {}, 
+      content: null,
+      error: 'Book ID is required' 
+    }, { status: 400 });
   }
 
   try {
-    // Fetch metadata
-    const metadataResponse = await fetch(`https://www.gutenberg.org/ebooks/${bookId}`, {
-      method: 'GET',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; GutenbergAnalyzer/1.0)',
-      },
-    });
+    // Fetch metadata and content in parallel
+    const [metadataResponse, contentResponse] = await Promise.all([
+      fetchFromGutenberg(`${GUTENBERG_BASE_URL}/ebooks/${bookId}`),
+      fetchFromGutenberg(`${GUTENBERG_BASE_URL}/files/${bookId}/${bookId}-0.txt`)
+    ]);
 
-    // Fetch content
-    const contentResponse = await fetch(`https://www.gutenberg.org/files/${bookId}/${bookId}-0.txt`, {
-      method: 'GET',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; GutenbergAnalyzer/1.0)',
-      },
-    });
-
-    // Check if both requests were successful
+    // Check if metadata request was successful
     if (!metadataResponse.ok) {
-      return NextResponse.json(
-        { error: 'Failed to fetch book metadata' },
-        { status: metadataResponse.status }
-      );
+      return NextResponse.json({
+        success: false,
+        bookId,
+        metadataAvailable: false,
+        contentAvailable: false,
+        metadata: {},
+        content: null,
+        error: 'Failed to fetch book metadata'
+      }, { status: metadataResponse.status });
     }
 
+    // Process content
     let content = null;
     let contentAvailable = false;
 
@@ -112,13 +144,18 @@ export async function GET(request: Request) {
       metadataAvailable: metadataResponse.ok,
       contentAvailable,
       metadata: bookMetadata,
-      content: contentAvailable && content ? content.slice(0, 20000) + "..." : null
+      content: contentAvailable && content ? content.slice(0, CONTENT_PREVIEW_LENGTH) + "..." : null
     });
   } catch (error) {
     console.error('Error fetching book:', error);
-    return NextResponse.json(
-      { error: 'Can\'t find book' },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      success: false,
+      bookId,
+      metadataAvailable: false,
+      contentAvailable: false,
+      metadata: {},
+      content: null,
+      error: 'Can\'t find book'
+    }, { status: 500 });
   }
 } 
