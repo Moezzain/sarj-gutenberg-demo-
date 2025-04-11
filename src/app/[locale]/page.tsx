@@ -18,6 +18,7 @@ interface BookMetadata {
   subjects?: string[];
   summary?: string;
   coverImage?: string;
+  metadataAvailable?: boolean;
 }
 
 interface BookData {
@@ -57,6 +58,10 @@ interface FormData {
   bookId: string;
 }
 
+interface TranslationFunction {
+  (key: string, params?: Record<string, string | number>): string;
+}
+
 // Components
 const CharacterGraph = dynamic(() => import('@/components/CharacterGraph'), { ssr: false });
 
@@ -68,7 +73,15 @@ const LoadingSpinner = () => (
   </svg>
 );
 
-const BookMetadataDisplay = ({ metadata, bookId, t }: { metadata: BookMetadata; bookId: string; t: any }) => (
+const BookMetadataDisplay = ({ 
+  metadata, 
+  bookId, 
+  t 
+}: { 
+  metadata: BookMetadata & { metadataAvailable?: boolean }; 
+  bookId: string; 
+  t: TranslationFunction 
+}) => (
   <div className="flex flex-wrap items-start gap-6">
     {metadata.coverImage && (
       <div className="w-36 flex-shrink-0 rounded overflow-hidden shadow-md relative">
@@ -107,7 +120,15 @@ const BookMetadataDisplay = ({ metadata, bookId, t }: { metadata: BookMetadata; 
   </div>
 );
 
-const CharacterAnalysisDisplay = ({ data, locale, t }: { data: CharacterAnalysis; locale: string; t: any }) => (
+const CharacterAnalysisDisplay = ({ 
+  data, 
+  locale, 
+  t 
+}: { 
+  data: CharacterAnalysis; 
+  locale: string; 
+  t: TranslationFunction 
+}) => (
   <ClientOnly>
     <div className="mt-6 border-t pt-4">
       <h3 className="text-lg font-semibold mb-3">{t('characters')}</h3>
