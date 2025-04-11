@@ -33,6 +33,7 @@
     "foundBook": "Found book with ID",
     "bookFetchError": "Failed to find the book. Please check the ID and try again.",
     "genericError": "An error occurred while fetching the book.",
+    "noContentAvailable": "Not able to download content of the book.",
     "characterAnalysisComplete": "Character analysis complete!",
     "analysisError": "Failed to analyze characters.",
     "analysisGenericError": "An error occurred while analyzing characters.",

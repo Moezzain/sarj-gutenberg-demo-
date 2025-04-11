@@ -76,8 +76,16 @@ export default function Home({params}: {params: Promise<{locale: string}>}) {
       const result = await response.json();
       
       if (response.ok && result.success) {
-        toast.success(`${t('foundBook')}: ${data.bookId}`);
-        setBookData(result);
+        if(result.contentAvailable)
+        {
+          toast.success(`${t('foundBook')}: ${data.bookId}`);
+          setBookData(result);
+        }
+        else
+        {
+          toast.error(result.error || t('noContentAvailable'));
+          setBookData(result);
+        }
       } else {
         toast.error(result.error || t('bookFetchError'));
       }
@@ -157,10 +165,11 @@ export default function Home({params}: {params: Promise<{locale: string}>}) {
         <div className="mt-8 w-full max-w-6xl border p-4 rounded-md">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">{t('bookInformation')}</h2>
-            <Button 
-              onClick={analyzeCharacters} 
-              disabled={isAnalyzing}
-              variant="outline"
+            {bookData.content && (
+              <Button 
+                onClick={analyzeCharacters} 
+                disabled={isAnalyzing}
+                variant="outline"
             >
               {isAnalyzing ? (
                 <>
@@ -172,6 +181,7 @@ export default function Home({params}: {params: Promise<{locale: string}>}) {
                 </>
               ) : t('analyzeCharacters')}
             </Button>
+            )}
           </div>
           
           <div className="mb-4">
@@ -302,13 +312,14 @@ export default function Home({params}: {params: Promise<{locale: string}>}) {
               </div>
             </ClientOnly>
           )}
-          
+          {bookData.content && (
           <div className="mt-4">
             <h3 className="text-lg font-medium mb-2">{t('preview.title')}:</h3>
             <div className="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto">
               <pre className="whitespace-pre-wrap text-sm">{bookData.content}</pre>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>

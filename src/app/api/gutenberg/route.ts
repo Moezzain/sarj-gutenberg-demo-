@@ -94,15 +94,13 @@ export async function GET(request: Request) {
       );
     }
 
-    if (!contentResponse.ok) {
-      return NextResponse.json(
-        { error: 'Failed to fetch book content' },
-        { status: contentResponse.status }
-      );
-    }
+    let content = null;
+    let contentAvailable = false;
 
-    // Get the content as text
-    const content = await contentResponse.text();
+    if (contentResponse.ok) {
+      content = await contentResponse.text();
+      contentAvailable = true;
+    }
     
     // Get and parse the metadata HTML
     const metadataHtml = await metadataResponse.text();
@@ -110,10 +108,11 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ 
       success: true, 
-      bookId, 
+      bookId,
       metadataAvailable: metadataResponse.ok,
+      contentAvailable,
       metadata: bookMetadata,
-      content: content.slice(0, 20000) + "..."
+      content: contentAvailable && content ? content.slice(0, 20000) + "..." : null
     });
   } catch (error) {
     console.error('Error fetching book:', error);

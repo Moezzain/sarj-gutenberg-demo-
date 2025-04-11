@@ -33,6 +33,7 @@
     "foundBook": "تم العثور على كتاب بمعرف",
     "bookFetchError": "فشل في العثور على الكتاب. يرجى التحقق من المعرف والمحاولة مرة أخرى.",
     "genericError": "حدث خطأ أثناء جلب الكتاب.",
+    "noContentAvailable": "لم يتم العثور على محتوى لهذا الكتاب.",
     "characterAnalysisComplete": "اكتمل تحليل الشخصيات!",
     "analysisError": "فشل في تحليل الشخصيات.",
     "analysisGenericError": "حدث خطأ أثناء تحليل الشخصيات.",
