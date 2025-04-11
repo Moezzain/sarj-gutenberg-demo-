@@ -104,7 +104,7 @@ export async function POST(request: Request) {
     console.log(result);
     if(result.error) {
       return NextResponse.json(
-        { error: 'Failed to analyze characters - free tier rate limit exceeded' },
+        { error: 'Failed to analyze characters - free tier rate limit exceeded - please wait a minute and try again' },
         { status: 500 }
       );
     }

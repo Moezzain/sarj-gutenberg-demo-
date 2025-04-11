@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import ClientOnly from "@/components/ClientOnly";
 import { useTranslations } from "next-intl";
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 
 type FormData = {
   bookId: string;
@@ -52,6 +53,12 @@ type CharacterAnalysis = {
   genre: string;
   writingStyle: WritingStyle;
 };
+
+// Use dynamic import for CharacterGraph
+const CharacterGraph = dynamic(
+  () => import('@/components/CharacterGraph'),
+  { ssr: false }
+);
 
 export default function Home({params}: {params: Promise<{locale: string}>}) {
   const t = useTranslations();
@@ -237,6 +244,18 @@ export default function Home({params}: {params: Promise<{locale: string}>}) {
               <div className="mt-6 border-t pt-4">
                 <h3 className="text-lg font-semibold mb-3">{t('characters')}</h3>
                 
+                <div className="mt-6 mb-6">
+                  <h4 className="font-medium mb-2">{t('characterRelationships')}</h4>
+                  <div className="border rounded-md p-1 bg-white">
+                    <CharacterGraph 
+                      characters={characterData.characters}
+                      interactions={characterData.interactions}
+                      locale={locale}
+                    />
+                  </div>
+                </div>
+
+
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h4 className="font-medium mb-2">{t('characters')}</h4>
@@ -309,6 +328,7 @@ export default function Home({params}: {params: Promise<{locale: string}>}) {
                     </div>
                   </div>
                 </div>
+
               </div>
             </ClientOnly>
           )}
